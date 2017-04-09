@@ -143,7 +143,7 @@
     </style>
     <title></title>
     <script type="text/javascript" class="silex-json-styles">
-        [{"desktop":{"body-initial":{"background-color":"rgba(255,255,255,1)"},"silex-id-1474394621033-3":{"min-height":"600px","top":"5px","left":"0px"},"silex-id-1474394621032-2":{"min-height":"100px","background-color":"rgb(255, 255, 255)"},"silex-id-1474394605264-1":{"min-height":"100px","width":"100px","top":"100px","left":"100px"},"silex-id-1474394605263-0":{"min-height":"100px","background-color":"transparent"},"silex-id-1442914737143-3":{"min-height":"36px","width":"960px","top":"37px","left":"1px"},"silex-id-1491711867009-0":{"min-height":"20px","width":"204px","top":"63px","left":"484px"}},"mobile":{},"componentData":{}}]
+        [{"desktop":{"body-initial":{"background-color":"rgba(255,255,255,1)"},"silex-id-1474394621033-3":{"min-height":"600px","top":"5px","left":"0px"},"silex-id-1474394621032-2":{"min-height":"100px","background-color":"rgb(255, 255, 255)"},"silex-id-1474394605264-1":{"min-height":"100px","width":"100px","top":"100px","left":"100px"},"silex-id-1474394605263-0":{"min-height":"100px","background-color":"transparent"},"silex-id-1442914737143-3":{"min-height":"36px","width":"960px","top":"37px","left":"1px"}},"mobile":{},"componentData":{}}]
     </script>
 
 
@@ -157,6 +157,175 @@
         }
     </style>
     <!-- Silex HEAD tag do not remove -->
+    <HTML>
+
+    <HEAD>
+        <TITLE>parser</TITLE>
+
+
+        <script type="text/javascript">
+            Array.prototype.peek = function () {
+      return this[this.length - 1];
+    };  
+    
+    
+    function infixToPostfixRe(reStr, dontPrint) {
+    
+      var output = [];
+      var stack = [];
+    
+      for (var k = 0, length = reStr.length; k < length;  k++) {
+    
+        // current char
+        var c = reStr[k];
+    
+        if (c == '(')
+          stack.push(c);
+    
+        else if (c == ')') {
+          while (stack.peek() != '(') {
+            output.push(stack.pop())
+          }
+          stack.pop(); // pop '('
+        }
+    
+        // else work with the stack
+        else {
+          while (stack.length) {
+            var peekedChar = stack.peek();
+    
+            var peekedCharPrecedence = precedenceOf(peekedChar);
+            var currentCharPrecedence = precedenceOf(c);
+    
+            if (peekedCharPrecedence >= currentCharPrecedence) {
+              output.push(stack.pop());
+            } else {
+              break;
+            }
+          }
+          stack.push(c);
+        }
+    
+      } // end for loop
+    
+      while (stack.length)
+        output.push(stack.pop());
+    
+      var result = output.join("");
+    
+      // !dontPrint && console.log(reStr, "=>", result);
+      !dontPrint && document.write(reStr, "=>", result);
+      document.write("</br>");
+    
+      return result;
+    
+    }
+    
+     precedenceMap = {
+      '(': 1,
+      '|': 2, // alternate
+      '.': 3, // concatenate
+    
+      '?': 4, // zero or one
+      '*': 4, // zero or more
+      '+': 4, // one or more
+    
+      '^': 5 // complement
+    
+      // else 6
+    
+    };
+    
+    function precedenceOf(c) {
+      return precedenceMap[c] || 6;
+    }
+    
+    
+    
+    
+              function parse()
+              {
+              		var priority={"*":1,"/":1, "+":2, "-":2,"(":5};
+               		var expression = document.getElementById('exp');
+              		var spexpression=[];
+                  var nnum="0123456789";
+                  var optr="+-*/%";
+                  //var stack=[]; //using synth instead
+                  var synth=[];
+                  var len = function() {
+                    return this.length;
+                    };
+                  var length=len.call(spexpression)
+                  var i=0;
+    
+              		document.write("Expression is: " + expression.value +"</br>");
+    
+                  spexpression=(expression.value).split('');
+              		spexpression.push('
+    
+    <body data-silex-id="body-initial" class="body-initial silex-runtime" data-silex-type="container">
+        <div class="silex-pages">
+            <div data-silex-type="image" class="editable-style silex-id-hamburger-menu image-element menu-button prevent-draggable prevent-resizable" data-silex-id="silex-id-hamburger-menu">
+                <img alt="open mobile menu" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAoCAYAAAC8cqlMAAAB5UlEQVR42u2ZPWvCUBSGM+UfFO3e3dLu/QN+oKj4EUXRQREEJYgoiCAu6qCogyDo7iJ21UUaKqEgCC4iiEMGB3UVgsnpTWj/wfVK2nvhGbKEPJyT996TMMzPGg6H5mKx+GgkyuWyeTQasb8OTDwef4tEIp8+n+/LYIjJZJJHQiwzm81M6OLDarWqNpsNjEYgEJCy2ewT0+/3TagighElNFAnQT6ft1ARKkJFqMgfFvF4PFpuEwFtdrcRqVarIIoirFYrIiyXSxiPx+B2u/GJBINBuF6vQHopigK1Wg2fCMdxcLlciIuoqgqNRgOfiN1uB3Qwg91uB8fjkQiHwwEmkwne1qLxS0VuKKJle71eh06nQ4Rmswk8z+MVcTqdsNlsQJZlotF7Pp8hk8ngE4lGo/qN7xG/vV4Pb0Xm8zlxkdPpBGgMx/+yJxIJKBQKRMjlcuBwOGhq/Q+RcDgMsViMCFrAuFwu/CKDwQC22y1IkkSE/X4PgiDo+xc2Ea0S9zjGa/Hb7Xbxifj9fj0K7yFSqVTwtlY6nYbpdKpPiSRYLBbQarX0PYymFhWhIlSEilCRW6GdyUqlkoVZr9dsKpXiOY6TtW+7BkNBz/7ebrcf9L+6Xq+XRYPMMyrTq5EIhUIvaAjTJb4BBNQ2yhnth0wAAAAASUVORK5CYII=" class="silex-element-content">
+            </div>
+    
+            <a id="page-page-1" data-silex-type="page" class="page-element page-link-active">Page 1</a></div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    </body></html>);
+              		document.write("Spexpression is: " + spexpression+"</br>");
+         
+                   //pasted converted code instead
+                    // for(i=0;i<len.call(spexpression);i++)
+                    // {
+                    //   if(nnum.includes(spexpression[i]))
+                    //     synth.push(spexpression[i]);
+                    //   else if(optr.includes(spexpression[i]) || spexpression[i]=="(" || spexpression[i]==")")
+                    //     synth.push(spexpression[i]);
+                    //   else
+                    //     document.writeln("**nothing pushed**");
+                    // }		
+    
+                    infixToPostfixRe(spexpression);
+    
+                    synth=synth.join("");
+                    result=eval(synth);
+                    document.write("Synth is " + synth);
+                    document.write("Result is " + result);
+                          
+                }
+        </script>
+    </HEAD>
+
+
+    <BODY>
+        <input type="text" id="exp" value="">
+        </br>
+        </br>
+        <div id="orange"><br/>
+            <button type="button" id="btn" onClick="parse()">PARSE</button>
+        </div>
+        <div id="green">✓</div>
+        <div id="red">X</div>
+
+
+    </BODY>
+
+    </HTML>
     <!-- End of Silex HEAD tag do not remove -->
 </head>
 
